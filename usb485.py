@@ -24,6 +24,7 @@ dictIndex = {
 
 dictModes = {
     'OPMODE_HOMING': 40,
+    'PROFILE_POSITION': 31,
 }
 
 # Function Code Dictionary
@@ -123,7 +124,7 @@ class DBDStepperGroup():
         self.thread1.start()
 
     # value 0 - disable, 1 - enable
-    def enable(self, mid, msubid, value):
+    def setEnable(self, mid, msubid, value):
         self.sendMessage(dictFuncCode['WRITE_SDO'], dictIndex['ControlWordIndex'], mid, msubid, value)
 
     # value can be 100 to 3000 (mA) according to torque requirement
@@ -136,6 +137,17 @@ class DBDStepperGroup():
     def setHoming(self, mid, msubid):
         self.sendMessage(dictFuncCode['WRITE_SDO'], dictIndex['OperationModeIndex'], mid, msubid,
                          dictModes['OPMODE_HOMING'])
+    def waitHomingDone(self, mid, msubid):
+        time.sleep(1)
+        self.sendMessage(dictFuncCode['READ_SDO'], dictIndex['OperationModeIndex'], mid, msubid,0)
+        time.sleep(1)
+        while self.motors[mid][msubid][dictIndex['OperationModeIndex']] != dictModes['PROFILE_POSITION']:
+            self.sendMessage(dictFuncCode['READ_SDO'], dictIndex['OperationModeIndex'], mid, msubid,
+                         0)
+            time.sleep(0.2)
+
+    def setCurrent(self, mid, msubid, value):
+        self.sendMessage(dictFuncCode['WRITE_SDO'], dictIndex['TargetCurrentIndex'], mid, msubid, value)
 
     def setPos(self, mid, msubid, value):
         self.motors[mid][msubid][dictIndex['TargetPositionIndex']] = value
@@ -144,7 +156,7 @@ class DBDStepperGroup():
     def waitPos(self, mid, msubid):
         while self.motors[mid][msubid][dictIndex['TargetPositionIndex']] != self.motors[mid][msubid][
             dictIndex['ActualPositionIndex']]:
-            self.sendMessage(dictFuncCode['READ_SDO'], dictIndex['TargetPositionIndex'], mid, msubid, 0)
+            self.sendMessage(dictFuncCode['READ_SDO'], dictIndex['ActualPositionIndex'], mid, msubid, 0)
             time.sleep(0.1)
 
     # This Function Value will change All 22 IOs' State at One Time
