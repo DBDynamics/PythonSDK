@@ -1,4 +1,4 @@
-# Python support for DBD Products
+# Python SDK for DBD Products
 setPowerOn(id) 	设置对应id号的状态为使能,使能后电机开始受驱动器控制.使能后状态指示灯由快速闪烁变为慢速闪烁.
 
 setPowerOff(id) 	设置对应id号的状态为失能,失能后电机不再受驱动器控制.失能后状态指示灯由慢速闪烁变为快速闪烁.
