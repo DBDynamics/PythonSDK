@@ -1,6 +1,7 @@
-from DBDynamics import Ant
+from DBDynamics import Bee
 import time
 
-m = Ant('/dev/ttyUSB0')  # or COM2 COM3
-m.scanDevices()
+m = Bee('COM6')  # or COM2 COM3
+l = m.scanDevices()
+print(l)
 m.stop()

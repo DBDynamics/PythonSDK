@@ -903,6 +903,19 @@ class Bee:
             if vel == 0:
                 condition = 0
 
+    def waitHomingDoneTimeout(self, id, timeout):
+        condition = 1
+        counter = 0
+        while condition:
+            counter += 1
+            vel = self.getActualVelocity(id)
+            if vel == 0:
+                condition = 0
+                return 1
+            if counter > timeout:
+                condition = 0
+                return -1
+
     def waitTargetPositionReached(self, id):
         condition = 1
         time.sleep(0.5)
